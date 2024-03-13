@@ -1,0 +1,110 @@
+<!--#include("include.header.html")-->
+<div class="row-fluid tb_resource">
+	<div class="span2">
+		<!--#include("include.leftbox.html")-->
+	</div>
+	<div class="resourceContent span10">
+		<div class="page-header">
+			<h4>{$lang->cmd_list_my_package}</h4>
+		</div>
+		<div class="help-block">{$lang->about_my_package}</div>
+		<br />
+		<!--@if($selected_package)-->
+		<table class="table table-striped table-condensed table-hover ac" style="margin-bottom:0">
+		<colgroup>
+		<col width="140" /><col /><col width="120" /><col />
+		</colgroup>
+		<tr>
+		    <th scope="row">{$lang->package_title}</th>
+		    <td colspan="3">{$selected_package->title}</td>
+		</tr>
+		<tr>
+		    <th scope="row">{$lang->voted_count}</th>
+		    <td><!--@for($i=0;$i<5;$i++)--><!--@if($i<$selected_package->star)--><i class="icon-star"></i><!--@else--><i class="icon-star-empty"></i><!--@end--><!--@end--> <span class="label">{$selected_package->voter}</span></td>
+		    <th scope="row">{$lang->download}</th>
+		    <td>{number_format($selected_package->downloaded)}</td>
+		</tr>
+		<tr>
+		    <th scope="row">{$lang->status}</th>
+		    <td class="status {$selected_package->status}">
+		        <!--@if($selected_package->status == 'accepted')-->
+		            {$lang->package_accepted}
+		        <!--@elseif($selected_package->status == 'reservation')-->
+		            {$lang->package_reservation}
+		        <!--@else-->
+		            {$lang->package_waiting}
+		        <!--@end-->
+		    </td>
+		    <th scope="row">{$lang->regdate}</th>
+		    <td class="date">{zdate($selected_package->regdate, "Y-m-d H:i")}</td>
+		</tr>
+		<tr>
+		    <th scope="row">{$lang->package_category}</th>
+		    <td>{$categories[$selected_package->category_srl]->title}</td>
+		    <th scope="row">{$lang->package_license}</th>
+		    <td>{$selected_package->license}</td>
+		</tr>
+		<!--@if($module_info->resource_use_path=='Y')-->
+		<tr>
+		    <th scope="row">{$lang->package_path}</th>
+		    <td colspan="3">{$selected_package->path}</td>
+		</tr>
+		<!--@end-->
+		<tr>
+		    <th scope="row">{$lang->package_homepage}</th>
+		    <td colspan="3"><!--@if($selected_package->homepage)--><a href="{$selected_package->homepage}">{$selected_package->homepage}</a><!--@else-->&nbsp;<!--@end--></td>
+		</tr>
+		<tr>
+		    <th scope="row">{$lang->package_description}</th>
+		    <td colspan="3">{nl2br($selected_package->description)}</td>
+		</tr>
+		<tr>
+			<td><a href="{getUrl('act','dispResourcePackageList')}" class="btn"><i class="icon-arrow-left"></i> {$lang->cmd_back}</a></td>
+			<td colspan="3">
+				<div class="btn-group pull-right">
+				    <a href="{getUrl('act','dispResourceAttach')}" class="btn" cond="$selected_package->status == 'accepted'"><i class="icon-file"></i> {$lang->cmd_attach_file}</a>
+				    <a href="{getUrl('act','dispResourceModifyPackage')}" class="btn"><i class="icon-pencil"></i> {$lang->cmd_modify}</a>
+				    <a href="{getUrl('act','dispResourceDeletePackage')}" class="btn"><i class="icon-trash"></i> {$lang->cmd_delete}</a>
+				</div>
+			</td>
+		</tr>
+		</table>
+		<!--@end-->
+		
+		<!--@if($attach_items)-->
+		<!--@foreach($attach_items as $key => $val)-->
+		<table class="table table-striped table-condensed ac">
+		<colgroup>
+		<col width="120" />
+		<col width="10%" /><col />
+		<col width="10%" /><col />
+		</colgroup>
+		<tr>
+		    <td rowspan="3" class="center"><img src="{$val->screenshot_url}" width="100" height="100" alt="" class="thumbnail" /></td>
+		    <th scope="row">{$lang->attach_file}</th>
+		    <td><a href="{$val->download_url}" class="file">{$val->source_filename}</a></td>
+		    <th scope="row">{$lang->attach_version}</th>
+		    <td>{$val->version}</td>
+		</tr>
+		<tr>
+		    <th scope="row">{$lang->downloaded_count}</th>
+		    <td>{number_format($val->downloaded)}</td>
+		    <th scope="row">{$lang->voted_count}</th>
+		    <td><!--@for($i=0;$i<5;$i++)--><!--@if($i<$val->star)--><i class="icon-star"></i><!--@else--><i class="icon-star-empty"></i><!--@end--><!--@end--> ({$val->voter})</td>
+		</tr>
+		<tr>
+		    <th scope="row">{$lang->regdate}</th>
+		    <td class="date">{zdate($val->regdate, "Y-m-d H:i")}</td>
+		    <td class="right" colspan="2">
+		    	<div class="btn-group">
+		    	    <a href="{getUrl('act','dispResourceModifyAttach','item_srl',$val->item_srl)}" class="btn btn-mini"><i class="icon-pencil"></i> {$lang->cmd_modify}</a>
+			        <a href="#" onclick="if(confirm('{$lang->confirm_delete}')) doDeleteAttach({$val->package_srl},{$val->item_srl}); return false;" class="btn btn-mini"><i class="icon-trash"></i> {$lang->cmd_delete}</a>
+		    	</div>
+		    </td>
+		</tr>
+		</table>
+		<!--@end-->
+		<!--@end-->
+	</div>
+</div>
+<!--#include("include.footer.html")-->

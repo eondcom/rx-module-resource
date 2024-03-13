@@ -1,0 +1,30 @@
+<!--#include("include.header.html")-->
+
+<div class="form requestPackage">
+    <form action="./" method="post" class="form-horizontal" onsubmit="return procFilter(this, delete_package);">
+	    <input type="hidden" name="vid" value="{$vid}" />
+	    <input type="hidden" name="mid" value="{$mid}" />
+	    <input type="hidden" name="package_srl" value="{$selected_package->package_srl}" />
+	    <fieldset>
+	        <legend>{$lang->cmd_delete_package} <small>{$lang->about_delete_package}</small></legend>
+	        <div class="control-group">
+		        <label class="control-label">{$lang->package_title}</label>
+		        <div class="controls">
+		        	<input type="text" disabled readonly value="{$selected_package->title}" />
+		        </div>
+	        </div>
+	        <div class="control-group">
+		        <label class="control-label">{$lang->package_description}</label>
+		        <div class="controls">
+			       	{nl2br($selected_package->description)}
+		        </div>
+	        </div>
+	        <div class="form-actions">
+	        	<button type="submit" class="btn btn-danger"><i class="icon-trash"></i> {$lang->cmd_delete}</button>
+	            <a href="{getUrl('act','dispResourcePackage')}" class="btn"><i class="icon-arrow-left"></i> {$lang->cmd_back}</a>
+	        </div>
+        </fieldset>
+    </form>
+</div>
+
+<!--#include("include.footer.html")-->

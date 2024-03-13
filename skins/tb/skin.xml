@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">The Bootstrap 자료실</title>
+    <title xml:lang="en">The Bootstrap Resource skin</title>
+    <description xml:lang="ko">The Bootstrap 테마 용 자료실 스킨입니다.</description>
+    <description xml:lang="en">Resource module skin for The Bootstrap skin</description>
+    <version>0.1</version>
+    <date>2012-07-19</date>
+    <author email_address="wincomi@me.com" link="http://xe.pe.kr">
+        <name xml:lang="ko">윈컴이</name>
+        <name xml:lang="en">wincomi</name>
+        <name xml:lang="zh-TW">wincomi</name>
+		<name xml:lang="vi">wincomi</name>
+    </author>
+
+    <extra_vars>
+        <var name="title" type="text">
+            <title xml:lang="ko">제목</title>
+            <title xml:lang="zh-TW">標題</title>
+			<title xml:lang="vi">Tiêu đề</title>
+			<title xml:lang="en">Title</title>
+            <description xml:lang="ko">제목을 적어주세요.</description>
+            <description xml:lang="zh-TW">請輸入標題。</description>
+			<description xml:lang="vi">Xin hãy nhập tiêu đề.</description>
+        </var>
+        <var name="sub_title" type="text">
+            <title xml:lang="ko">부제목</title>
+            <title xml:lang="zh-TW">副標題</title>
+			<title xml:lang="vi">Tiêu đề phụ</title>
+			<title xml:lang="en">Sub title</title>
+            <description xml:lang="ko">제목 옆에 나타날 부제목을 적어주세요.</description>
+            <description xml:lang="zh-TW">請輸入副標題。</description>
+			<description xml:lang="vi">Tiêu đề phụ sẽ hiển thị bên cạnh tiêu đề chính.</description>
+        </var>
+    </extra_vars>
+</skin>

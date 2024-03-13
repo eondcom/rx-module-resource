@@ -1,0 +1,106 @@
+<!--#include("include.header.html")-->
+<div class="row-fluid tb_resource">
+	<div class="span2">
+		<!--#include("include.leftbox.html")-->
+	</div>
+	<div class="resourceContent span10">
+		<div class="page-header"><h4>{$lang->cmd_manage_package} <small>{$lang->about_manage_package}</small></h4></div>
+		<form action="./" method="get" class="statusSelect well">
+		    <input type="hidden" name="vid" value="{$vid}" />
+		    <input type="hidden" name="mid" value="{$mid}" />
+		    <input type="hidden" name="page" value="{$page}" />
+		    <input type="hidden" name="act" value="{$act}" />
+		    <select name="category_srl" onchange="location.href=location.href.setQuery('category_srl',this.options[this.selectedIndex].value);return false;">
+		        <option value="">{$lang->package_category}</option>
+		    {@ $_curDepth = 0; }
+		    <!--@foreach($categories as $key => $val)-->
+		        <!--@if($val->depth<$_curDepth)-->
+		        </optgroup>
+		        <!--@end-->
+		        <!--@if($val->depth<1)-->
+		        <!--@if($val->child_count>0)-->
+		        <optgroup label="{$val->title}">
+		        <!--@else-->
+		        <option value="{$val->category_srl}" <!--@if($category_srl == $val->category_srl)-->selected="selected"<!--@end-->>{$val->title}</option>
+		        <!--@end-->
+		        <!--@end-->
+		        <!--@if($val->depth>0)-->
+		            <option value="{$val->category_srl}" <!--@if($category_srl == $val->category_srl)-->selected="selected"<!--@end-->>{$val->title}</option>
+		        <!--@end-->
+		        {@ $_curDepth = $val->depth}
+		    <!--@end-->
+		    <!--@for($i=0;$i<$_curDepth;$i++)--></optgroup><!--@end-->
+		    </select>
+		    <select name="status" onchange="location.href=location.href.setQuery('status',this.options[this.selectedIndex].value);return false;">
+		        <option value="" <!--@if(!$status)-->selected="selected"<!--@end-->>{$lang->package_status}</option>
+		        <option value="waiting" <!--@if($status=='waiting')-->selected="selected"<!--@end-->>{$lang->package_waiting}</option>
+		        <option value="accepted" <!--@if($status=='accepted')-->selected="selected"<!--@end-->>{$lang->package_accepted}</option>
+		        <option value="reservation" <!--@if($status=='reservation')-->selected="selected"<!--@end-->>{$lang->package_reservation}</option>
+		    </select>
+		</form>
+		
+		<!--@foreach($package_list as $key => $val)-->
+		<table class="table table-striped">
+		<colgroup>
+		<col width="100" /><col /><col width="100" /><col /><col width="100" /><col />
+		</colgroup>
+		<tr>
+		    <th scope="row">{$lang->package_title}</th>
+		    <td>{$val->title}</td>
+		    <th scope="row">{$lang->package_category}</th>
+		    <td>{$categories[$val->category_srl]->title}</td>
+		    <th scope="row">{$lang->regdate}</th>
+		    <td class="date">{zdate($val->regdate, "Y-m-d H:i")}</td>
+		</tr>
+		<tr>
+		    <!--@if($module_info->resource_use_path=='Y')-->
+		    <th scope="row">{$lang->package_path}</th>
+		    <td colspan="3">{$val->path}</td>
+		    <td colspan="2" class="left"><!--@if($val->homepage)--><a href="{$val->homepage}">{$val->homepage}</a><!--@else-->&nbsp;<!--@end--></td>
+		    <!--@else-->
+		    <th scope="row">{$lang->homepage}</th>
+		    <td colspan="5" class="left"><!--@if($val->homepage)--><a href="{$val->homepage}">{$val->homepage}</a><!--@else-->&nbsp;<!--@end--></td>
+		    <!--@end-->
+		</tr>
+		<tr>
+		    <th scope="row">{$lang->package_description}</th>
+		    <td colspan="3">{nl2br($val->description)}</td>
+		    <td colspan="2"><a href="#" class="member_{$val->member_srl}" onclick="return false;">{$val->nick_name}</a></td>
+		</tr>
+		<tr>
+		    <td scope="row" colspan="6">
+		        <form action="./" method="get" onsubmit="return procFilter(this,change_status);"  style="float:right;margin-bottom:0">
+		            <input type="hidden" name="vid" value="{$vid}" />
+		            <input type="hidden" name="mid" value="{$mid}" />
+		            <input type="hidden" name="page" value="{$page}" />
+		            <input type="hidden" name="package_srl" value="{$val->package_srl}" />
+		            <select name="status" style="width:100px">
+		                <option value="waiting" <!--@if($val->status=='waiting')-->selected="selected"<!--@end-->>{$lang->package_waiting}</option>
+		                <option value="accepted" <!--@if($val->status=='accepted')-->selected="selected"<!--@end-->>{$lang->package_accepted}</option>
+		                <option value="reservation" <!--@if($val->status=='reservation')-->selected="selected"<!--@end-->>{$lang->package_reservation}</option>
+		            </select>
+		            <button type="submit" class="btn btn-info"><i class="icon-ok icon-white"></i> {$lang->cmd_apply}</button>
+		            <button type="button" onclick="if(confirm('{$lang->confirm_delete}')) doDeletePackage({$val->package_srl}); return false;" class="btn btn-danger"><i class="icon-trash icon-white"></i> {$lang->cmd_delete}</button>
+		        </form>
+		    </th>
+		</table>
+		
+		<!--@end-->
+		
+		<div class="pagination pagination-centered">
+			<ul>
+				<li><a href="{getUrl('page','')}" class="prevEnd">&laquo;</a></li>
+				<!--@while($page_no = $page_navigation->getNextPage())-->
+					<!--@if($page == $page_no)-->
+						<li class="active"><a>{$page_no}</a></li>
+					<!--@else-->
+						<li><a href="{getUrl('page',$page_no)}">{$page_no}</a></li>
+					<!--@end-->
+				<!--@end-->
+				<li><a href="{getUrl('page',$page_navigation->last_page)}" class="nextEnd">&raquo;</a></li>
+			</ul>
+		</div>
+		
+		<!--#include("include.footer.html")-->
+	</div>
+</div>

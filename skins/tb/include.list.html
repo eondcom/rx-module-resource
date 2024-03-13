@@ -1,0 +1,66 @@
+    <ul class="nav nav-tabs {$order_type}">
+        <!--@if($order_target=='newest')-->
+            <!--@if($order_type == 'desc')-->{@$_order_type = 'asc'}<!--@else-->{@$_order_type = 'desc'}<!--@end-->
+        <!--@else-->
+            {@$_order_type = 'desc'}
+        <!--@end-->
+        <li class="active"|cond="$order_target=='newest'"><a href="{getUrl('order_target','newest','order_type',$_order_type)}">{$lang->order_newest}</a></li>
+        <!--@if($order_target=='download')-->
+            <!--@if($order_type == 'desc')-->{@$_order_type = 'asc'}<!--@else-->{@$_order_type = 'desc'}<!--@end-->
+        <!--@else-->
+            {@$_order_type = 'desc'}
+        <!--@end-->
+        <li class="active"|cond="$order_target=='download'"><a href="{getUrl('order_target','download','order_type',$_order_type)}">{$lang->order_download}</a></li>
+        <!--@if($order_target=='popular')-->
+            <!--@if($order_type == 'desc')-->{@$_order_type = 'asc'}<!--@else-->{@$_order_type = 'desc'}<!--@end-->
+        <!--@else-->
+            {@$_order_type = 'desc'}
+        <!--@end-->
+        <li class="active"|cond="$order_target=='popular'"><a href="{getUrl('order_target','popular','order_type',$_order_type)}">{$lang->order_popular}</a></li>
+    </ul>
+
+    <!--@foreach($item_list as $key => $val)-->
+    <table class="packageList table table-striped ac">
+	    <tr>
+	        <td rowspan="4" class="thumbnail_img"><a href="{getUrl('package_srl', $val->package_srl)}" class="thumbnail"><img src="{$val->item_screenshot_url}" alt="" /></a></td>
+	        <td class="title">
+	            <a href="{getUrl('package_srl', $val->package_srl)}">{htmlspecialchars($val->title)} ver. {htmlspecialchars($val->item_version)}</a>
+	        </td>
+	    </tr>
+	    <tr>
+	        <td class="info">
+                <!--@if($val->category_srl)--><a href="{getUrl('category_srl', $val->category_srl)}" class="tooltip-top" title="{$lang->package_category} : {$categories[$val->category_srl]->title}"><i class="icon-tag"></i></a><!--@end-->
+				<!--@if($val->package_voter)-->
+                <!--{sprintf("%0.1f",$val->package_voted/$val->package_voter*2)} /{number_format($val->package_voter)}-->
+				<!--@else-->
+				<!--0 / 0-->
+				<!--@end-->
+                <span class="tooltip-top" data-title="{$lang->nick_name} : {$val->nick_name}"><i class="icon-user"></i></span>
+                <span class="tooltip-top" data-title="{$lang->cmd_update} : {zdate($val->item_regdate,'Y-m-d H:i')}"><i class="icon-calendar"></i></span>
+                <span class="tooltip-top" data-title="{$lang->cmd_download} : {number_format($val->package_downloaded)}"><i class="icon-download-alt"></i></span>
+                <span class="star tooltip-top" data-title="{$lang->star_point} : <!--@if($val->package_voter)-->{sprintf("%0.1f",$val->package_voted/$val->package_voter*2)} /{number_format($val->package_voter)}<!--@else-->0 / 0<!--@end-->"><!--@for($i=0;$i<5;$i++)--><!--@if($i<$val->package_star)--><i class="icon-star"></i><!--@else--><i class="icon-star-empty"></i><!--@end--><!--@end--></span>
+	            <block cond="$grant->manager">
+    	            <a href="{getUrl('act','dispResourcePackage','package_srl',$val->package_srl)}" class="tooltip-top" title="{$lang->cmd_modify}"><i class="icon-pencil"></i></a>
+	                <a href="#" onclick="if(confirm('{$lang->confirm_delete}')) doDeleteItem({$val->package_srl},{$val->item_srl}); return false;" class="tooltip-top" title="{$lang->cmd_delete}"><i class="icon-trash"></i></a>
+	            </block>
+	        </td>
+	    </tr>
+	    <tr>
+	        <td class="description">{cut_str(htmlspecialchars($val->package_description),200)}</td>
+	    </tr>
+    </table>
+    <!--@end-->
+
+    <div class="pagination pagination-centered">
+    	<ul>
+	        <li><a href="{getUrl('page','')}" class="prevEnd">&laquo;</a></li>
+	        <!--@while($page_no = $page_navigation->getNextPage())-->
+	            <!--@if($page == $page_no)-->
+	                <li class="active"><a>{$page_no}</a></li>
+	            <!--@else-->
+	                <li><a href="{getUrl('page',$page_no)}">{$page_no}</a></li>
+	            <!--@end-->
+	        <!--@end-->
+	        <li><a href="{getUrl('page',$page_navigation->last_page)}" class="nextEnd">&raquo;</a></li>
+    	</ul>
+    </div>

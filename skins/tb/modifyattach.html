@@ -1,0 +1,109 @@
+<!--#include("include.header.html")-->
+<div class="row-fluid tb_resource">
+	<div class="span2">
+		<!--#include("include.leftbox.html")-->
+	</div>
+	<div class="list span10">
+	    <div class="page-header"><h4>{$lang->cmd_manage_file}</h4></div>
+	    <p class="help-block">{$lang->about_manage_file}</p>
+	
+	    <table class="table table-striped table-condensed">
+	    <colgroup>
+	    <col width="140" /><col /><col width="120" /><col />
+	    </colgroup>
+	    <tr>
+	        <th scope="row">{$lang->package_title}</th>
+	        <td colspan="3">{$selected_package->title}</td>
+	    </tr>
+	    <tr>
+	        <th scope="row">{$lang->status}</th>
+	        <td class="status {$selected_package->status}">
+	            <!--@if($selected_package->status == 'accepted')-->
+	                {$lang->package_accepted}
+	            <!--@elseif($selected_package->status == 'reservation')-->
+	                {$lang->package_reservation}
+	            <!--@else-->
+	                {$lang->package_waiting}
+	            <!--@end-->
+	        </td>
+	        <th scope="row">{$lang->regdate}</th>
+	        <td class="date">{zdate($selected_package->regdate, "Y-m-d H:i")}</td>
+	    </tr>
+	    <tr>
+	        <th scope="row">{$lang->package_category}</th>
+	        <td>{$categories[$selected_package->category_srl]->title}</td>
+	        <th scope="row">{$lang->package_license}</th>
+	        <td>{$selected_package->license}</td>
+	    </tr>
+	    <tr>
+	        <th scope="row">{$lang->package_path}</th>
+	        <td colspan="3">{$selected_package->path}</td>
+	    </tr>
+	    </table>
+	
+	    <form action="./" method="post" onsubmit="doCalDependency(this); return procFilter(this, modify_attach);" enctype="multipart/form-data" class="form-horizontal"> 
+	    <input type="hidden" name="vid" value="{$vid}" />
+	    <input type="hidden" name="mid" value="{$mid}" />
+	    <input type="hidden" name="act" value="" />
+	    <input type="hidden" name="package_srl" value="{$selected_package->package_srl}" />
+	    <input type="hidden" name="item_srl" value="{$item->item_srl}" />
+	    <input type="hidden" name="document_srl" value="{$item->document_srl}" />
+	    <input type="hidden" name="attach_dependency" value="" />
+	    <input type="hidden" name="attach_description" value="{$item_document->getContentText()}" />
+	    <fieldset>
+	    	<div class="control-group">
+	    		<label for="attach_file" class="control-label"><em style="color:red">*</em> {$lang->attach_file}</label>
+	    		<div class="controls">
+	    			<input type="file" name="attach_file"/>
+	    			<p class="help-block">{$lang->about_attach_file}</p>
+	    		</div>
+	    	</div>
+	    	<div class="control-group">
+	    		<label for="attach_screenshot" class="control-label"><em style="color:red">*</em> {$lang->attach_screenshot}</label>
+	    		<div class="controls">
+                    <img src="{$item->screenshot_url}" alt="" class="thumbnail pull-left" style="margin-right:5px" />
+                    <input type="file" name="attach_screenshot"/>
+                    <p class="help-block">{$lang->about_attach_screenshot}</p>
+	    		</div>
+	    	</div>
+	    	<div class="control-group">
+	    		<label for="sel_dependency" class="control-label"><em style="color:red">*</em> {$lang->attach_dependency}</label>
+	    		<div class="controls">
+                    <select name="sel_dependency" size="10" class="select_field" id="sel_dependency">
+                    <!--@foreach($dependency as $key => $val)-->
+                    	<option value="{$val->item_srl}">[{$categories[$val->category_srl]->title}] {$val->title} (ver. {$val->version})</option>
+                    <!--@end-->
+                    </select>
+                    <p style="margin-top:5px">
+                        <a href="#" onclick="doSearchDependency(); return false;" class="btn"><i class="icon-search"></i> {$lang->cmd_search}</a>
+                        <a href="#" onclick="doDeleteDependency(); return false;" class="btn"><i class="icon-trash"></i> {$lang->cmd_delete}</a>
+                    </p>
+                    <p class="help-block">{$lang->about_attach_dependency}</p>
+	    		</div>
+	    	</div>
+	    	<div class="control-group">
+	    		<label for="tag" class="control-label">{$lang->tag}</label>
+	    		<div class="controls">
+	    			<input type="text" name="tag" class="text_field" value="{htmlspecialchars($item_document->get('tags'))}" />
+	    			<p class="help-block">{$lang->about_tag}</p>
+	    		</div>
+	    	</div>
+	    	<div class="control-group">
+	    		<label class="control-label"><em style="color:red">*</em> {$lang->attach_description}</label>
+	    		<div class="controls">
+	    			<div class="editor">{$editor}</div>
+	    			<p class="help-block">{$lang->about_attach_description}</p>
+	    		</div>
+	    	</div>
+	        </fieldset>
+	
+	        <div class="form-actions">
+	        	<button type="submit" class="btn btn-primary"><i class="icon-ok"></i> {$lang->cmd_attach_file}</button>
+	            <a href="{getUrl('act','dispResourcePackage','item_srl','')}" class="btn"><i class="icon-arrow-left"></i> {$lang->cmd_back}</a>
+	        </div>
+	    </form>
+	
+	</div>
+</div>	
+
+<!--#include("include.footer.html")-->

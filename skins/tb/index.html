@@ -1,0 +1,16 @@
+<!--#include("include.header.html")-->
+<div class="row-fluid tb_resource">
+	<div class="span2">
+		<!--#include("include.leftbox.html")-->
+	</div>
+	<div class="resourceContent span10">
+	    <!--@if($items)-->
+	        <!--#include("include.itemlist.html")-->
+	    <!--@elseif(!$package)-->
+	        <!--#include("include.list.html")-->
+	    <!--@else-->
+	        <!--#include("include.package.html")-->
+	    <!--@end-->
+	</div>
+</div>
+<!--#include("include.footer.html")-->

@@ -11,14 +11,14 @@
         }
 
         function procResourceInsertPackage() {
-            if(!$this->module_srl) return new Object(-1,'msg_invalid_request');
+            if(!$this->module_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $logged_info = Context::get('logged_info');
             $site_module_info = Context::get('site_module_info');
 
             $args = Context::gets('category_srl','title','license','homepage','description');
             if($this->module_info->resource_use_path=='Y') $args->path = Context::get('path');
-            foreach($args as $key => $val) if(!trim($val)) return new Object(-1,'msg_invalid_request');
+            foreach($args as $key => $val) if(!trim($val)) return new BaseObject(-1,'msg_invalid_request');
             if($args->homepage&&!preg_match('/:\/\//',$args->homepage)) $args->homepage = 'http://'.$args->homepage;
 
             $args->package_srl = getNextSequence();
@@ -49,20 +49,20 @@
         function procResourceModifyPackage() {
             $oResourceModel = &getModel('resource');
 
-            if(!$this->module_srl) return new Object(-1,'msg_invalid_request');
+            if(!$this->module_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $logged_info = Context::get('logged_info');
             $site_module_info = Context::get('site_module_info');
 
             $args = Context::gets('package_srl', 'title','license','homepage','description');
             if($this->module_info->resource_use_path=='Y') $args->path = Context::get('path');
-            foreach($args as $key => $val) if(!trim($val)) return new Object(-1,'msg_invalid_request');
+            foreach($args as $key => $val) if(!trim($val)) return new BaseObject(-1,'msg_invalid_request');
             if($args->homepage&&!preg_match('/:\/\//',$args->homepage)) $args->homepage = 'http://'.$args->homepage;
 
             $selected_package = $oResourceModel->getPackage($this->module_srl, $args->package_srl);
-            if(!$selected_package->package_srl) return new Object(-1,'msg_invalid_request');
+            if(!$selected_package->package_srl) return new BaseObject(-1,'msg_invalid_request');
 
-            if(!$this->grant->manager && $logged_info->member_srl != $selected_package->member_srl) return new Object(-1,'msg_not_permitted');
+            if(!$this->grant->manager && $logged_info->member_srl != $selected_package->member_srl) return new BaseObject(-1,'msg_not_permitted');
 
             $category_srl = Context::get('package_category');
             if($category_srl && $this->grant->manager) $args->category_srl = $category_srl;
@@ -84,17 +84,17 @@
         function procResourceDeletePackage() {
             $oResourceModel = &getModel('resource');
 
-            if(!$this->module_srl) return new Object(-1,'msg_invalid_request');
+            if(!$this->module_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $logged_info = Context::get('logged_info');
             $site_module_info = Context::get('site_module_info');
 
             $package_srl = Context::get('package_srl');
-            if(!$package_srl) return new Object(-1,'msg_invalid_request');
+            if(!$package_srl) return new BaseObject(-1,'msg_invalid_request');
             $selected_package = $oResourceModel->getPackage($this->module_srl, $package_srl);
-            if(!$selected_package->package_srl) return new Object(-1,'msg_invalid_request');
+            if(!$selected_package->package_srl) return new BaseObject(-1,'msg_invalid_request');
 
-            if(!$this->grant->manager && $logged_info->member_srl != $selected_package->member_srl) return new Object(-1,'msg_not_permitted');
+            if(!$this->grant->manager && $logged_info->member_srl != $selected_package->member_srl) return new BaseObject(-1,'msg_not_permitted');
 
             $args->package_srl = $package_srl;
             $args->module_srl = $this->module_srl;
@@ -118,18 +118,18 @@
             $oCommunicationController = &getController('communication');
             $oResourceModel = &getModel('resource');
 
-            if(!$this->module_srl) return new Object(-1,'msg_invalid_request');
+            if(!$this->module_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $args = Context::gets('package_srl', 'status');
-            foreach($args as $key => $val) if(!trim($val)) return new Object(-1,'msg_invalid_request');
-            if(!in_array($args->status, array('accepted','reservation','waiting'))) return new Object(-1,'msg_invalid_request');
+            foreach($args as $key => $val) if(!trim($val)) return new BaseObject(-1,'msg_invalid_request');
+            if(!in_array($args->status, array('accepted','reservation','waiting'))) return new BaseObject(-1,'msg_invalid_request');
 
             $logged_info = Context::get('logged_info');
 
             $selected_package = $oResourceModel->getPackage($this->module_srl, $args->package_srl);
-            if(!$selected_package->package_srl) return new Object(-1,'msg_invalid_request');
+            if(!$selected_package->package_srl) return new BaseObject(-1,'msg_invalid_request');
 
-            if(!$this->grant->manager && $logged_info->member_srl != $selected_package->member_srl) return new Object(-1,'msg_not_permitted');
+            if(!$this->grant->manager && $logged_info->member_srl != $selected_package->member_srl) return new BaseObject(-1,'msg_not_permitted');
 
             $output = executeQuery('resource.updatePackageStatus', $args);
             if(!$output->toBool()) return $output;
@@ -173,14 +173,14 @@
             $oDocumentController = getController('document');
 
             $args = Context::gets('package_srl','version','description');
-            foreach($args as $key => $val) if(!trim($val)) return new Object(-1,'msg_invalid_request');
+            foreach($args as $key => $val) if(!trim($val)) return new BaseObject(-1,'msg_invalid_request');
 
             $logged_info = Context::get('logged_info');
 
             $selected_package = $oResourceModel->getPackage($this->module_srl, $args->package_srl);
-            if(!$selected_package) return new Object(-1,'msg_invalid_request');
+            if(!$selected_package) return new BaseObject(-1,'msg_invalid_request');
 
-            if(!$this->grant->manager && $logged_info->member_srl != $selected_package->member_srl) return new Object(-1,'msg_not_permitted');
+            if(!$this->grant->manager && $logged_info->member_srl != $selected_package->member_srl) return new BaseObject(-1,'msg_not_permitted');
 
             if($proc)
             {
@@ -261,7 +261,7 @@
         function insertDependency($module_srl, $package_srl, $item_srl, $targets) {
             //철훈 추가
             $args = new stdClass;
-            
+
             $args->module_srl = $module_srl;
             $args->item_srl = $item_srl;
             executeQuery('resource.deleteDependency', $args);
@@ -273,6 +273,7 @@
             }
             if(!count($arr_dependency)) return;
 
+            $dargs = new stdClass;
             $dargs->item_srl = implode(',',$arr_dependency);
             $output = executeQueryArray('resource.getItemByItemSrl', $dargs);
             if(!$output->data) return;
@@ -292,22 +293,22 @@
             $oFileController = getController('file');
 
             $args = Context::gets('package_srl','item_srl','attach_file','attach_screenshot', 'latest_item_srl');
-            if(!$this->module_srl) return  new Object(-1,'msg_invalid_request');
-            if(!$args->package_srl || !$args->item_srl) return  new Object(-1,'msg_invalid_request');
+            if(!$this->module_srl) return  new BaseObject(-1,'msg_invalid_request');
+            if(!$args->package_srl || !$args->item_srl) return  new BaseObject(-1,'msg_invalid_request');
 
-            if(!is_uploaded_file($args->attach_file['tmp_name']))  new Object(-1,'msg_invalid_request');
-            if(!is_uploaded_file($args->attach_screenshot['tmp_name']))  new Object(-1,'msg_invalid_request');
+            if(!is_uploaded_file($args->attach_file['tmp_name']))  new BaseObject(-1,'msg_invalid_request');
+            if(!is_uploaded_file($args->attach_screenshot['tmp_name']))  new BaseObject(-1,'msg_invalid_request');
 
             $logged_info = Context::get('logged_info');
 
             $package = $oResourceModel->getPackage($this->module_srl, $args->package_srl);
-            if(!$package) return  new Object(-1,'msg_invalid_request');
+            if(!$package) return  new BaseObject(-1,'msg_invalid_request');
 
-            if(!$this->grant->manager && $logged_info->member_srl != $package->member_srl) return new Object(-1,'msg_not_permitted');
+            if(!$this->grant->manager && $logged_info->member_srl != $package->member_srl) return new BaseObject(-1,'msg_not_permitted');
 
             $output = executeQuery('resource.getItemByItemSrl', $args);
             $item = $output->data;
-            if(!$item) return  new Object(-1,'msg_invalid_request');
+            if(!$item) return  new BaseObject(-1,'msg_invalid_request');
 
             $output = $oFileController->insertFile($args->attach_file, $this->module_srl, $args->item_srl);
             if(!$output || !$output->toBool())
@@ -350,7 +351,7 @@
 
         public function procResourceModifyAttachOneTime()
         {
-        	//return new Object(-1, 'test');
+        	//return new BaseObject(-1, 'test');
         	$oDB = DB::getInstance();
         	$oDB->begin();
 
@@ -380,18 +381,18 @@
             $package_srl = Context::get('package_srl');
             $item_srl = Context::get('item_srl');
             $document_srl = Context::get('document_srl');
-            if(!$this->module_srl || !$package_srl || !$item_srl) return new Object(-1,'msg_invalid_request');
+            if(!$this->module_srl || !$package_srl || !$item_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $logged_info = Context::get('logged_info');
 
             $package = $oResourceModel->getPackage($this->module_srl, $package_srl);
-            if(!$package) return new Object(-1,'msg_invalid_request');
+            if(!$package) return new BaseObject(-1,'msg_invalid_request');
 
-            if(!$this->grant->manager && $logged_info->member_srl != $package->member_srl) return new Object(-1,'msg_not_permitted');
+            if(!$this->grant->manager && $logged_info->member_srl != $package->member_srl) return new BaseObject(-1,'msg_not_permitted');
 
             $item = $oResourceModel->getItem($this->module_srl, $package_srl, $item_srl);
-            if(!$item) return new Object(-1,'msg_invalid_request');
-            if($item->document_srl != $document_srl) return new Object(-1,'msg_invalid_request');
+            if(!$item) return new BaseObject(-1,'msg_invalid_request');
+            if($item->document_srl != $document_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $args = new stdClass();
             $args->module_srl = $this->module_srl;
@@ -419,21 +420,21 @@
             $oFileController = getController('file');
 
             $args = Context::gets('package_srl','item_srl','attach_file','attach_screenshot');
-            if(!$this->module_srl) return  new Object(-1,'msg_invalid_request');
-            if(!$args->package_srl || !$args->item_srl) return  new Object(-1,'msg_invalid_request');
+            if(!$this->module_srl) return  new BaseObject(-1,'msg_invalid_request');
+            if(!$args->package_srl || !$args->item_srl) return  new BaseObject(-1,'msg_invalid_request');
 
             $logged_info = Context::get('logged_info');
 
             $package = $oResourceModel->getPackage($this->module_srl, $args->package_srl);
-            if(!$package) return  new Object(-1,'msg_invalid_request');
+            if(!$package) return  new BaseObject(-1,'msg_invalid_request');
 
-            if(!$this->grant->manager && $logged_info->member_srl != $package->member_srl) return new Object(-1,'msg_not_permitted');
+            if(!$this->grant->manager && $logged_info->member_srl != $package->member_srl) return new BaseObject(-1,'msg_not_permitted');
 
             $item = $oResourceModel->getItem($this->module_srl, $args->package_srl, $args->item_srl);
-            if(!$item) return  new Object(-1,'msg_invalid_request');
+            if(!$item) return  new BaseObject(-1,'msg_invalid_request');
 
             if($args->attach_file['tmp_name']) {
-                if(!is_uploaded_file($args->attach_file['tmp_name']))  new Object(-1,'msg_invalid_request');
+                if(!is_uploaded_file($args->attach_file['tmp_name']))  new BaseObject(-1,'msg_invalid_request');
                 $oFileController->deleteFile($item->file_srl);
                 $output = $oFileController->insertFile($args->attach_file, $this->module_srl, $args->item_srl);
                 if(!$output || !$output->toBool()) return $output;
@@ -441,7 +442,7 @@
             }
 
             if($args->attach_screenshot['tmp_name']) {
-                if(!is_uploaded_file($args->attach_screenshot['tmp_name']))  new Object(-1,'msg_invalid_request');
+                if(!is_uploaded_file($args->attach_screenshot['tmp_name']))  new BaseObject(-1,'msg_invalid_request');
                 $output = $oFileController->insertFile($args->attach_screenshot, $this->module_srl, $args->item_srl);
                 if(!$output || !$output->toBool()) return $output;
                 $args->screenshot_url = $output->get('uploaded_filename');
@@ -471,15 +472,15 @@
 
             $package_srl = Context::get('package_srl');
             $item_srl = Context::get('item_srl');
-            if(!$this->module_srl || !$package_srl || !$item_srl) return new Object(-1,'msg_invalid_request');
+            if(!$this->module_srl || !$package_srl || !$item_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $logged_info = Context::get('logged_info');
 
             $item = $oResourceModel->getItem($this->module_srl, $package_srl, $item_srl);
-            if(!$item) return new Object(-1,'msg_invalid_request');
+            if(!$item) return new BaseObject(-1,'msg_invalid_request');
 
             $package = $oResourceModel->getPackage($this->module_srl, $package_srl);
-            if(!$package || (!$this->grant->manager && $package->member_srl != $logged_info->member_srl)) return new Object(-1,'msg_invalid_request');
+            if(!$package || (!$this->grant->manager && $package->member_srl != $logged_info->member_srl)) return new BaseObject(-1,'msg_invalid_request');
 
             $args->module_srl = $this->module_srl;
             $args->package_srl = $package_srl;
@@ -509,7 +510,7 @@
 
             $args->item_srl = $obj->upload_target_srl;
             $output = executeQuery('resource.getItemByItemSrl', $args);
-            if(!$output->data) return new Object();
+            if(!$output->data) return new BaseObject();
 
             $item = $output->data;
             $args->package_srl = $item->package_srl;
@@ -518,29 +519,29 @@
             $output = executeQuery('resource.updateItemDownloadedCount', $args);
             $output = executeQuery('resource.updatePackageDownloadedCount', $args);
 
-            return new Object();
+            return new BaseObject();
         }
 
         function procResourceInsertComment() {
             $oCommentController = &getController('comment');
             $oResourceModel = &getModel('resource');
 
-            if(!$this->grant->write_comment) return new Object(-1, 'msg_not_permitted');
-            if(!$this->module_srl) return new Object(-1,'msg_invalid_request');
+            if(!$this->grant->write_comment) return new BaseObject(-1, 'msg_not_permitted');
+            if(!$this->module_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $args = Context::gets('package_srl', 'item_srl','star_point','content');
             $args->module_srl = $this->module_srl;
 
-            if(!$args->star_point || !$args->content || !$args->package_srl || !$args->item_srl) return new Object(-1,'msg_invalid_request');
+            if(!$args->star_point || !$args->content || !$args->package_srl || !$args->item_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $item = $oResourceModel->getItem($args->module_srl, $args->package_srl, $args->item_srl);
-            if(!$item->document_srl) return new Object(-1,'msg_invalid_request');
+            if(!$item->document_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $package = $oResourceModel->getPackage($args->module_srl, $args->package_srl);
-            if(!$package->package_srl) return new Object(-1,'msg_invalid_request');
+            if(!$package->package_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $logged_info = Context::get('logged_info');
-            if($oResourceModel->hasVoted($this->module_srl, $package->package_srl, $args->item_srl, $logged_info->member_srl)) return new Object(-1,'msg_already_voted');
+            if($oResourceModel->hasVoted($this->module_srl, $package->package_srl, $args->item_srl, $logged_info->member_srl)) return new BaseObject(-1,'msg_already_voted');
 
             $args->document_srl = $item->document_srl;
             $args->comment_srl = getNextSequence();
@@ -577,21 +578,21 @@
             $oCommentController = &getController('comment');
             $oResourceModel = &getModel('resource');
 
-            if(!$this->grant->write_comment) return new Object(-1, 'msg_not_permitted');
-            if(!$this->module_srl) return new Object(-1,'msg_invalid_request');
+            if(!$this->grant->write_comment) return new BaseObject(-1, 'msg_not_permitted');
+            if(!$this->module_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $args = Context::gets('package_srl', 'item_srl','comment_srl');
             $args->module_srl = $this->module_srl;
 
             $comment_srl = Context::get('comment_srl');
             $oComment = $oCommentModel->getComment($comment_srl);
-            if(!$oComment->isExists() || !$oComment->isGranted()) return new Object(-1,'msg_invalid_request');
+            if(!$oComment->isExists() || !$oComment->isGranted()) return new BaseObject(-1,'msg_invalid_request');
 
             $item = $oResourceModel->getItem($args->module_srl, $args->package_srl, $args->item_srl);
-            if(!$item->document_srl) return new Object(-1,'msg_invalid_request');
+            if(!$item->document_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $package = $oResourceModel->getPackage($args->module_srl, $args->package_srl);
-            if(!$package->package_srl) return new Object(-1,'msg_invalid_request');
+            if(!$package->package_srl) return new BaseObject(-1,'msg_invalid_request');
 
             $output = $oCommentController->deleteComment($oComment->comment_srl);
             if(!$output->toBool()) return $output;

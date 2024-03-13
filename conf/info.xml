@@ -10,7 +10,7 @@
 	<description xml:lang="vi">Module chia sẻ dữ liệu</description>
 	<description xml:lang="en">Module for download service</description>
 	<description xml:lang="tr">İndirme Modülü</description>
-    <version>1.7.0</version>
+    <version>1.7.1</version>
     <date>2013-03-20</date>
     <category>service</category>
     <author email_address="developers@xpressengine.com" link="http://resources.xpressengine.net">

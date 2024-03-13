@@ -1,0 +1,55 @@
+<div class="modal modal-mini fade hide" id="tb_resource_search">
+	<div class="modal-body">
+		<form action="./" method="get" class="form form-search">
+		    <input type="hidden" name="vid" value="{$vid}" />
+		    <input type="hidden" name="mid" value="{$mid}" />
+		    <input type="hidden" name="category_srl" value="{$category_srl}" />
+		    <input type="text" name="search_keyword" value="{htmlspecialchars($search_keyword)}" x-webkit-speech />
+		</form>
+	</div>
+</div>
+<div class="leftBox ac">
+	<div class="well well-small">
+		<button type="button" class="btn btn-block" onclick='jQuery(".tb_resource #tb_resource_search").modal("show");'><i class="icon-search"></i> {$lang->cmd_search}</button>
+	</div>
+        {@ $_pDepth = 0;}
+        <ul class="nav nav-list well">
+        	<li class="nav-header"><!--{getSiteUrl($site_module_info->domain,'','mid',$module_info->mid)}-->{$lang->package_category} ({number_format($package_categories[0]->count)})</span></a></li>
+            <!--@foreach($categories as $key => $val)-->
+            <!--@if($_pDepth > $val->depth)-->
+            <!--@for($i=$val->depth; $i<$_pDepth; $i++)-->
+        </ul>
+        </li>
+            <!--@end-->
+            {@ $_pDepth = $val->depth}
+            <!--@end-->
+            <li>
+                <!--@if($val->child_count)-->
+                <a href="{getSiteUrl($site_module_info->domain, '', 'mid', $module_info->mid, 'category_srl',$val->category_srl,'childs', implode(',',$val->childs))}"<!--@if($val->category_srl == $category_srl)--> class="active"<!--@end-->>{$val->text}</a>
+                <!--@else-->
+                <a href="{getSiteUrl($site_module_info->domain, '', 'mid', $module_info->mid, 'category_srl',$val->category_srl)}" class="<!--@if($val->category_srl == $category_srl)--> active <!--@end-->tooltip-right"<!--@if($package_categories[$val->category_srl])-->title="{$package_categories[$val->category_srl]->count}"<!--@end-->>{$val->text}</a>
+                <!--@end-->
+            <!--@if($val->child_count)-->
+            {@$_pDepth++}
+        <ul class="nav nav-list">
+            <!--@else-->
+            </li>
+            <!--@end-->
+            <!--@end-->
+            <!--@for($i=0;$i<$_pDepth;$i++)-->
+        </ul>
+        <!--@end-->
+        </li>
+        </ul>
+        <ul class="resourceManage nav nav-list well">
+        	<li class="nav-header">{$lang->cmd_management}</li>
+            <li><a href="{getSiteUrl($site_module_info->domain, '', 'mid',$module_info->mid,'act','dispResourcePackageList')}">{$lang->cmd_list_my_package}</a></li>
+            <!--@if($grant->manager)-->
+            <li><a href="{getSiteUrl($site_module_info->domain, '', 'mid',$module_info->mid,'act','dispResourceManage')}">{$lang->cmd_manage_package}</a></li>
+            <!--@end-->
+            <li class="insertPackage"><a href="{getSiteUrl($site_module_info->domain, '', 'mid',$module_info->mid,'act','dispResourceInsertPackage')}">{$lang->cmd_insert_package}</a></li>
+            <!--@if($grant->manager)-->
+            <li><a href="{getSiteUrl($site_module_info->domain, '', 'mid',$module_info->mid,'act','dispResourceAdminInsert')}">{$lang->cmd_setup}</a></li>
+            <!--@end-->
+        </ul>
+</div>

@@ -38,7 +38,7 @@
 			if(!$oModuleModel->getTrigger('menu.getModuleListInSitemap', 'resource', 'model', 'triggerModuleListInSitemap', 'after'))
 				$oModuleController->insertTrigger('menu.getModuleListInSitemap', 'resource', 'model', 'triggerModuleListInSitemap', 'after');
 
-            return new Object(0, 'success_updated');
+            return new BaseObject(0, 'success_updated');
         }
 
 		function moduleUninstall() {
@@ -47,7 +47,7 @@
             if($oModuleModel->getTrigger('file.downloadFile', 'resource', 'controller', 'triggerUpdateDownloadedCount', 'after')) 
                 $oModuleController->deleteTrigger('file.downloadFile', 'resource', 'controller', 'triggerUpdateDownloadedCount', 'after');
 			$output = executeQueryArray("resource.getAllResources");
-			if(!$output->data) return new Object();
+			if(!$output->data) return new BaseObject();
 
 			set_time_limit(0);
 			foreach($output->data as $resource)
@@ -55,7 +55,7 @@
 				$oModuleController->deleteModule($resource->module_srl);
 			}
 			
-			return new Object();	
+			return new BaseObject();
 		}
 
         function recompileCache() {

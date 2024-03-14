@@ -96,6 +96,7 @@
 
             if(!$this->grant->manager && $logged_info->member_srl != $selected_package->member_srl) return new BaseObject(-1,'msg_not_permitted');
 
+            $args = new stdClass();
             $args->package_srl = $package_srl;
             $args->module_srl = $this->module_srl;
             $args->member_srl = $logged_info->member_srl;
@@ -280,7 +281,8 @@
 
             foreach($output->data as $key => $val) {
                 if($val->package_srl == $package_srl || $val->item_srl == $item_srl) continue;
-                unset($args);
+//                unset($args);
+                $args = new stdClass();
                 $args->module_srl = $module_srl;
                 $args->item_srl = $item_srl;
                 $args->dependency_item_srl = $val->item_srl;
@@ -313,6 +315,7 @@
             $output = $oFileController->insertFile($args->attach_file, $this->module_srl, $args->item_srl);
             if(!$output || !$output->toBool())
 			{
+
 				if($proc)
 				{
 					$pargs->module_srl = $this->module_srl;
@@ -403,6 +406,7 @@
             $output = executeQuery('resource.updateItem', $args);
             if(!$output->toBool()) return $output;
 
+            $doc_args = new stdClass();
             $doc_args->document_srl = $item->document_srl;
             $doc_args->content = $args->description;
             $doc_args->tags = Context::get('tag');
@@ -482,6 +486,7 @@
             $package = $oResourceModel->getPackage($this->module_srl, $package_srl);
             if(!$package || (!$this->grant->manager && $package->member_srl != $logged_info->member_srl)) return new BaseObject(-1,'msg_invalid_request');
 
+            $args = new stdClass();
             $args->module_srl = $this->module_srl;
             $args->package_srl = $package_srl;
             $args->item_srl = $item_srl;
@@ -495,6 +500,7 @@
             if(!$output->toBool()) return $output;
             $latest_item_srl = (int)$output->data->item_srl;
 
+            $largs = new stdClass();
             $largs->module_srl = $this->module_srl;
             $largs->package_srl = $package_srl;
             $largs->latest_item_srl = $latest_item_srl;
@@ -507,7 +513,7 @@
 
         function triggerUpdateDownloadedCount($obj) {
             $oResourceModel = &getModel('resource');
-
+            $args = new stdClass();
             $args->item_srl = $obj->upload_target_srl;
             $output = executeQuery('resource.getItemByItemSrl', $args);
             if(!$output->data) return new BaseObject();
@@ -549,7 +555,7 @@
             $args->voted_count = $args->star_point;
             $output = $oCommentController->insertComment($args);
             if(!$output->toBool()) return $output;
-
+            $star_args = new stdClass();
             $star_args->module_srl = $this->module_srl;
             $star_args->package_srl = $args->package_srl;
             $star_args->voted = $package->voted+$args->star_point;
@@ -596,11 +602,12 @@
 
             $output = $oCommentController->deleteComment($oComment->comment_srl);
             if(!$output->toBool()) return $output;
-
+            $p_args = new stdClass();
             $p_args->module_srl = $this->module_srl;
             $p_args->package_srl = $package->package_srl;
             $output = executeQuery('resource.getPackageSumStars', $p_args);
 
+            $p_star_args = new stdClass();
             $p_star_args->module_srl = $this->module_srl;
             $p_star_args->package_srl = $args->package_srl;
             $p_star_args->voted = (int)$output->data->voted;
@@ -612,6 +619,7 @@
             $p_args->item_srl = $item->item_srl;
             $output = executeQuery('resource.getItemSumStars', $p_args);
 
+            $i_star_args = new stdClass();
             $i_star_args->module_srl = $this->module_srl;
             $i_star_args->package_srl = $args->package_srl;
             $i_star_args->item_srl = $args->item_srl;
